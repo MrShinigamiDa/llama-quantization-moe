@@ -1,0 +1,52 @@
+python inference.py
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+Total Parameters: 262,735,872
+Total elements in buffers: 637,181,952
+Model Size on Disk/Memory: 1127.21 MB
+==================================
+
+I believe the meaning of life is
+>  to find out what life can be.
+I believe the meaning of life is to find out what life can be.
+I believe the meaning of life is to find out what life can be.
+I believe the meaning of life is to find out what life can be.
+I believe the meaning of life is to find out what
+
+==================================
+
+Simply put, the theory of relativity states that
+> 1) we don't know what's "really" going on, 2) we can't know what we're talking about, 3) we can't know what we're talking about, and 4) we can't know what we're talking about.
+But we know that 1) we don't
+
+==================================
+
+A brief message congratulating the team on the launch:
+
+        Hi everyone,
+
+        I just
+> 2 hours ago launched my new project, and I would like to thank everyone who helped me on this journey. This is a very exciting moment for me, and I am very grateful to all of you for your support and feedback. The project is called "Agriculture in a Digital Age", and it is a collaborative
+
+==================================
+
+Translate English to French:
+
+        sea otter => loutre de mer
+        peppermint => menthe poivrée
+        plush girafe => girafe peluche
+        cheese =>
+>  fromage
+        book => livre
+        pear => pêre
+        tangerine => carotte verte
+        pillow => couverture
+        toast => pain
+        sandwich => sandwich
+        orange => orange
+        pillowcase => case de linge
+        lollipop => gâteau à pince
+
+==================================

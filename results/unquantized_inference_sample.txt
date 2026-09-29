@@ -1,0 +1,46 @@
+python inference.py # Not Quantized
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+Total Parameters: 1,498,482,688
+Total elements in buffers: 0
+Model Size on Disk/Memory: 2858.13 MB
+==================================
+
+I believe the meaning of life is
+>  to find your passion and follow it. I have been a student of life for over 40 years and I have learned that the more you put into the life, the more you get out of it. I am a dedicated, passionate, and compassionate teacher. I love what I do and I have fun with my students
+
+==================================
+
+Simply put, the theory of relativity states that
+> 1) no reference frame can be used as an absolute reference frame, and 2) all reference frames are relative to each other.
+The theory of relativity is based on the idea that there are no absolute frames of reference. This means that there is no one frame of reference that is an absolute reference frame. In
+
+==================================
+
+A brief message congratulating the team on the launch:
+
+        Hi everyone,
+
+        I just
+>  want to say that I am so proud of the team for this launch. This is a really big milestone for the team and for the whole space industry. Congratulations to all of you and I hope you can keep up the momentum!
+
+==================================
+
+Translate English to French:
+
+        sea otter => loutre de mer
+        peppermint => menthe poivrée
+        plush girafe => girafe peluche
+        cheese =>
+>  fromage
+        coq au vin => poulet au vin
+        guava => guava
+        aubergine => patate douce
+        brussel sprout => brussel sprout
+        paprika => paprika
+        mayonnaise => mayonnaise
+        baby carrot
+
+==================================

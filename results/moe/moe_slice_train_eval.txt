@@ -1,0 +1,219 @@
+python train_moe.py --init-mode slice
+
+
+
+
+
+
+======================================================================
+Phase 3: MoE Fine-tuning Experiment
+======================================================================
+Config: N=4, K=2, init_mode=slice, train_samples=200, epochs=2
+
+[1/4] Loading dense baseline model...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+
+--- Dense Baseline ---
+  Q: Compose a short poem about the beauty of mathematics.
+  A:  In your poem, use as many mathematical symbols as you can. Be sure to use the symbols in a way that is appropriate for 
+
+  Q: Write a persuasive paragraph arguing that reading books is better than watching 
+  A:  You should support your argument with examples.
+Writing a persuasive paragraph is an important skill that can be used i
+
+  Q: Draft a professional email declining a job offer politely.
+  A:  Here’s how.
+The first step in declining a job offer is to send a formal email to the recruiter. The email should includ
+
+  Q: If a train travels at 60 mph for 2.5 hours, how far does it go? Show your reason
+  A:  (Round your answer to the nearest tenth of a mile.)
+The distance the train traveled was 5.5 miles.
+  1. 1 ## How much d
+
+  Q: What are three key differences between classical and operant conditioning?
+  A:  How are these differences similar to and different from the differences between classical and operant conditioning and 
+
+
+[2/4] Converting to MoE (before fine-tuning)...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+
+--- MoE (Before Training) ---
+  Q: Compose a short poem about the beauty of mathematics.
+  A:  examples examples examples examples examples examples examples examples examples examples examples examples examples ex
+
+  Q: Write a persuasive paragraph arguing that reading books is better than watching 
+  A:  prizes precedent_templates examples examples examples examples examples examples Lvilenamesilenamesilenamesilenamesilen
+
+  Q: Draft a professional email declining a job offer politely.
+  A:  Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow To
+
+  Q: If a train travels at 60 mph for 2.5 hours, how far does it go? Show your reason
+  A: reasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonable
+
+  Q: What are three key differences between classical and operant conditioning?
+  A: irectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirect
+
+Expert load before training (first 4 layers):
+  Layer 0: ['18%', '26%', '21%', '36%']
+  Layer 1: ['15%', '34%', '13%', '38%']
+  Layer 2: ['3%', '43%', '31%', '23%']
+  Layer 3: ['50%', '0%', '28%', '22%']
+
+[3/4] Fine-tuning MoE router + experts...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+Trainable params: 131,072 / 1,498,613,760 (0.01%)
+  Epoch 1, step 50/200, loss=11.6664
+  Epoch 1, step 100/200, loss=11.5296
+  Epoch 1, step 150/200, loss=11.0307
+  Epoch 1, step 200/200, loss=10.4908
+Epoch 1/2: loss=10.4908, time=22.1s
+  Epoch 2, step 50/200, loss=8.3257
+  Epoch 2, step 100/200, loss=8.2360
+  Epoch 2, step 150/200, loss=8.2665
+  Epoch 2, step 200/200, loss=8.2333
+Epoch 2/2: loss=8.2333, time=21.5s
+Training losses: [10.490791680552043, 8.233310045571791]
+
+[4/4] Evaluating fine-tuned MoE...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+
+--- MoE (After Training) ---
+  Q: Compose a short poem about the beauty of mathematics.
+  A: ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, and,,,,,,, and and,,,,,,,,,,, and,,, and
+
+  Q: Write a persuasive paragraph arguing that reading books is better than watching 
+  A:  a a a a,,,, a a a a a a a a a, a a a a a a a a a a a a a a a a a a,,,,,,,,,, a a a, a a a a a a, a, a a,,,
+
+  Q: Draft a professional email declining a job offer politely.
+  A: ahaaha we we we  we we we we we we we we we we we we we we we we we we we we we we we we we we we we we we  we  we we we
+
+  Q: If a train travels at 60 mph for 2.5 hours, how far does it go? Show your reason
+  A:  how I there there a.
+ a a a, and to,,,,, and,,, and,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+  Q: What are three key differences between classical and operant conditioning?
+  A:  a a a a a a,,,,, a a a a,?,??,,,,,, and all?
+,,,,,,,,,, and, a a ,,, a,:,,,,, and:,,,,,,,
+
+Expert load after training (first 4 layers):
+  Layer 0: ['19%', '17%', '18%', '46%']
+  Layer 1: ['49%', '25%', '14%', '12%']
+  Layer 2: ['37%', '47%', '10%', '5%']
+  Layer 3: ['21%', '50%', '19%', '10%']
+
+======================================================================
+COMPARISON: Side-by-side on 5 prompts
+======================================================================
+
+Q: Compose a short poem about the beauty of mathematics.
+  Dense:       In your poem, use as many mathematical symbols as you can. Be sure to use the symbols in a way that
+  MoE-before:  examples examples examples examples examples examples examples examples examples examples examples 
+  MoE-after:  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, and,,,,,,, and and,,,,,,,,,,, and,,, and
+
+Q: Write a persuasive paragraph arguing that reading books is better than watching 
+  Dense:       You should support your argument with examples.
+Writing a persuasive paragraph is an important skil
+  MoE-before:  prizes precedent_templates examples examples examples examples examples examples Lvilenamesilenames
+  MoE-after:   a a a a,,,, a a a a a a a a a, a a a a a a a a a a a a a a a a a a,,,,,,,,,, a a a, a a a a a a, a,
+
+Q: Draft a professional email declining a job offer politely.
+  Dense:       Here’s how.
+The first step in declining a job offer is to send a formal email to the recruiter. The
+  MoE-before:  Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow Tomorrow 
+  MoE-after:  ahaaha we we we  we we we we we we we we we we we we we we we we we we we we we we we we we we we we
+
+Q: If a train travels at 60 mph for 2.5 hours, how far does it go? Show your reason
+  Dense:       (Round your answer to the nearest tenth of a mile.)
+The distance the train traveled was 5.5 miles.
+
+  MoE-before: reasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonablereasonable
+  MoE-after:   how I there there a.
+ a a a, and to,,,,, and,,, and,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+Q: What are three key differences between classical and operant conditioning?
+  Dense:       How are these differences similar to and different from the differences between classical and opera
+  MoE-before: irectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirectirect
+  MoE-after:   a a a a a a,,,,, a a a a,?,??,,,,,, and all?
+,,,,,,,,,, and, a a ,,, a,:,,,,, and:,,,,,,,
+
+======================================================================
+DONE
+======================================================================
+
+
+
+
+
+
+
+
+ bhogasam@e21-02 ~/ee508-sp26-final-project-MrShinigamiDa-2 $  python eval_moe.py --init-mode slice
+======================================================================
+Quantitative MoE Evaluation
+Eval set: 100 held-out Alpaca samples
+======================================================================
+
+[1/3] Dense Baseline...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+  Perplexity: 9.66
+  Next-token accuracy: 51.36%
+  Evaluated on 5711 tokens
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  Generation speed: 45.8 tok/s (6.86s for 10 prompts)
+
+[2/3] MoE Before Training (init=slice, N=4, K=2)...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  Perplexity: 359015.72
+  Next-token accuracy: 0.00%
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  Generation speed: 27.6 tok/s (11.60s for 10 prompts)
+
+[3/3] MoE After Training...
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  Loaded fine-tuned weights from checkpoints/moe_finetuned.pt
+  Training losses: [10.490791680552043, 8.233310045571791]
+  Perplexity: 3227.23
+  Next-token accuracy: 4.36%
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  Generation speed: 20.1 tok/s (11.58s for 10 prompts)
+  Expert load (first 4 layers):
+    Layer 0: ['19%', '17%', '18%', '46%']
+    Layer 1: ['49%', '25%', '14%', '12%']
+    Layer 2: ['37%', '47%', '10%', '5%']
+    Layer 3: ['21%', '50%', '19%', '10%']
+
+======================================================================
+RESULTS SUMMARY
+======================================================================
+
+Metric                    |        Dense | MoE (before) |  MoE (after)
+----------------------------------------------------------------------
+Perplexity ↓              |         9.66 |    359015.72 |      3227.23
+Next-token Acc ↑          |       51.36% |        0.00% |        4.36%
+Gen Speed (tok/s) ↑       |         45.8 |         27.6 |         20.1
+
+MoE-before vs Dense:
+  PPL change: 9.66 → 359015.72 (↑ worse)
+  Acc change: 51.36% → 0.00%
+
+MoE-after vs MoE-before:
+  PPL change: 359015.72 → 3227.23 (↓ better)
+  Acc change: 0.00% → 4.36%
+
+======================================================================
+DONE
+======================================================================

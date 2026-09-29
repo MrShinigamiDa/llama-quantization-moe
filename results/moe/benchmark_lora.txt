@@ -1,0 +1,18 @@
+python benchmark_inference.py #lora
+Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+
+Batch size: 1
+Input length: 256 tokens
+Output length: 32 tokens
+Inference time: 1.25 seconds
+Tokens per second: 25.50
+Total parameters: 1,500,710,912
+Trainable parameters: 2,228,224
+Model weights memory usage: 2862.38 MB
+Peak memory usage: 3080.14 MB
+
+=== Sample Output ===
+ time in a galaxy far away Once upon a time in a galaxy far away Once upon a time in a galaxy far away Once upon a time in a galaxy far
