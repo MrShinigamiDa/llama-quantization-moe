@@ -5,7 +5,6 @@ import torch
 
 from llama.tokenizer import Tokenizer
 from llama.model import ModelArgs, Llama
-from llama.moe import convert_to_moe, get_expert_load_stats
 
 def generate_prompt_of_length(base_prompt, desired_token_len, tokenizer):
     """Extend base_prompt until it reaches approximately desired_token_len tokens"""
@@ -32,10 +31,11 @@ def get_model_memory_mb(model):
 
 def benchmark_inference(batch_size, input_len, output_len, kv_caching):
     # Single-config benchmark for a quick sanity check.
-    # Students should use run_benchmark.py for the report tables.
     torch.manual_seed(1)
 
-    checkpoint_dir = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
+    checkpoint_dir = os.environ.get(
+        "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+    )
     tokenizer_path = os.path.join(checkpoint_dir, "tokenizer.model")
     model_path = os.path.join(checkpoint_dir, "consolidated.00.pth")
 
@@ -51,12 +51,6 @@ def benchmark_inference(batch_size, input_len, output_len, kv_caching):
     torch.set_default_tensor_type(torch.cuda.HalfTensor)
     model = Llama(model_args)
     model.load_state_dict(checkpoint, strict=True)
-    convert = False
-    # convert=True; model, trainable_params = convert_to_moe(
-    #     model, num_experts=4, top_k=2,
-    #     init_mode=["slice", "lora"][1], lora_rank=8,
-    #     lora_alpha=16.0,
-    # )
     model.to("cuda")
     model.eval()
 
@@ -85,10 +79,10 @@ def benchmark_inference(batch_size, input_len, output_len, kv_caching):
     print(f"Inference time: {elapsed:.2f} seconds")
     print(f"Tokens per second: {batch_size * output_len / elapsed:.2f}")
     print(f"Total parameters: {sum(p.numel() for p in model.parameters()):,}")
-    if convert:
-        print(f"Trainable parameters: {sum(p.numel() for p in trainable_params):,}")
-    else:
-        print(f"Trainable parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
+    print(
+        "Trainable parameters: "
+        f"{sum(p.numel() for p in model.parameters() if p.requires_grad):,}"
+    )
     print(f"Model weights memory usage: {get_model_memory_mb(model):.2f} MB")
     print(f"Peak memory usage: {get_peak_memory_mb():.2f} MB")
     print("\n=== Sample Output ===")

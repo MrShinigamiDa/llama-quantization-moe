@@ -13,7 +13,7 @@ implementing custom layers, converting a pretrained model, validating numerical
 behavior, fine-tuning sparse experts, and measuring memory, latency, perplexity,
 and routing balance.
 
-> This is an educational research implementation. The INT4 and MoE paths use
+> This is a reference research implementation. The INT4 and MoE paths use
 > straightforward PyTorch operations to make the algorithms easy to inspect;
 > they are not replacements for fused production kernels.
 
@@ -140,6 +140,7 @@ routers and adapter parameters are trained.
 ├── inference.py             # Text-generation smoke test
 ├── benchmark_inference.py   # Single-configuration FP16 benchmark
 ├── run_benchmark.py         # FP16, INT4, and MoE comparisons
+├── verify_implementation.py # Structural and numerical checks
 ├── train_moe.py             # Slice/LoRA MoE fine-tuning
 ├── eval_moe.py              # Perplexity, accuracy, and throughput evaluation
 ├── prepare_data.py          # Alpaca and MT-Bench data preparation
@@ -178,8 +179,9 @@ pip install llama-stack
 llama model download --source meta --model-id Llama3.2-1B
 ```
 
-Set the checkpoint, tokenizer, and dataset paths near the top of the driver
-scripts for your environment. To regenerate the evaluation/fine-tuning data:
+By default, scripts load model files from `checkpoints/Llama3.2-1B` and data
+from `data`. Override either location with `LLAMA_CHECKPOINT_DIR` or
+`LLAMA_DATA_DIR`. To regenerate the evaluation/fine-tuning data:
 
 ```bash
 pip install datasets
@@ -199,6 +201,12 @@ python inference.py
 ```bash
 python benchmark_inference.py
 python run_benchmark.py
+```
+
+### Verify the implementations
+
+```bash
+python verify_implementation.py
 ```
 
 ### Train and evaluate MoE-Slice

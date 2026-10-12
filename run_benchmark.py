@@ -1,6 +1,4 @@
-"""
-Comprehensive benchmark for Phase 2 (INT4 quantization) and Phase 3 (MoE).
-Produces the numbers needed for the Phase 2 and Phase 3 tables in the project specification.
+"""Comprehensive benchmarks for INT4 quantization and sparse MoE inference.
 
 Run with: CUDA_VISIBLE_DEVICES=0 python run_benchmark.py
 """
@@ -13,7 +11,9 @@ from llama.tokenizer import Tokenizer
 
 
 def load_model(max_batch_size=4, max_seq_len=320, device="cuda"):
-    checkpoint_dir = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
+    checkpoint_dir = os.environ.get(
+        "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+    )
     tokenizer = Tokenizer(os.path.join(checkpoint_dir, "tokenizer.model"))
     checkpoint = torch.load(
         os.path.join(checkpoint_dir, "consolidated.00.pth"),
@@ -62,10 +62,10 @@ def benchmark_generation(model, tokenizer, batch_size, input_len, output_len, la
     return elapsed, peak_mem
 
 
-def benchmark_phase2():
-    """Benchmark Phase 2: INT4 Quantization."""
+def benchmark_int4():
+    """Benchmark dense FP16 and weight-only INT4 inference."""
     print("\n" + "=" * 70)
-    print("PHASE 2: INT4 Quantization Benchmark")
+    print("INT4 QUANTIZATION BENCHMARK")
     print("=" * 70)
 
     from llama.quantize import quantize_model, print_model_size
@@ -94,10 +94,10 @@ def benchmark_phase2():
         torch.cuda.empty_cache()
 
 
-def benchmark_phase3():
-    """Benchmark Phase 3: MoE."""
+def benchmark_moe():
+    """Benchmark dense and sparse MoE inference."""
     print("\n" + "=" * 70)
-    print("PHASE 3: MoE Benchmark")
+    print("MIXTURE-OF-EXPERTS BENCHMARK")
     print("=" * 70)
 
     from llama.moe import convert_to_moe, get_expert_load_stats
@@ -146,12 +146,11 @@ def benchmark_phase3():
 
 
 if __name__ == "__main__":
-    # Main report-generation driver. Students should not need to modify it.
     print("GPU:", torch.cuda.get_device_name(0))
     print("PyTorch:", torch.__version__)
 
-    benchmark_phase2()
-    benchmark_phase3()
+    benchmark_int4()
+    benchmark_moe()
 
     print("\n" + "=" * 70)
     print("ALL BENCHMARKS COMPLETE")

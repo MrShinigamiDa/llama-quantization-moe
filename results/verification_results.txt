@@ -1,0 +1,60 @@
+$  python verify_implementation.py
+======================================================================
+Implementation verification
+======================================================================
+
+======================================================================
+INT4 Quantization (llama/quantize.py)
+======================================================================
+  [ RUN ] quantize_tensor returns correct shapes / dtypes
+  [PASS] quantize_tensor returns correct shapes / dtypes
+  [ RUN ] quantize → dequantize round-trip has bounded error
+  [PASS] quantize → dequantize round-trip has bounded error
+  [ RUN ] quantize_model() reduces model size by ≈60%
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+<python-env>/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+  _C._set_default_tensor_type(t)
+  [PASS] quantize_model() reduces model size by ≈60%
+  [ RUN ] quantized model generates coherent (non-gibberish) text
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [PASS] quantized model generates coherent (non-gibberish) text
+
+======================================================================
+Mixture-of-Experts (llama/moe.py)
+======================================================================
+  [ RUN ] MoEFeedForward.forward preserves input shape
+  [SKIP] MoEFeedForward.forward preserves input shape: not available in this recorded run
+  [ RUN ] top-K routing weights sum to 1 after renormalization
+  [SKIP] top-K routing weights sum to 1 after renormalization: not available in this recorded run
+  [ RUN ] LoRAExpert outputs exactly zero at initialization
+  [SKIP] LoRAExpert outputs exactly zero at initialization: not available in this recorded run
+  [ RUN ] LoRAMoEFeedForward is identity on the base FFN at init
+  [SKIP] LoRAMoEFeedForward is identity on the base FFN at init: not available in this recorded run
+  [ RUN ] convert_to_moe(slice) adds exactly the router parameters
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [SKIP] convert_to_moe(slice) adds exactly the router parameters: not available in this recorded run
+  [ RUN ] convert_to_moe(lora) has exactly the expected parameter count
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [SKIP] convert_to_moe(lora) has exactly the expected parameter count: not available in this recorded run
+  [ RUN ] LoRA-MoE preserves dense logits at init (zero-init identity)
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [SKIP] LoRA-MoE preserves dense logits at init (zero-init identity): not available in this recorded run
+  [ RUN ] LoRA mode freezes the base FFN and keeps LoRA trainable
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [SKIP] LoRA mode freezes the base FFN and keeps LoRA trainable: not available in this recorded run
+  [ RUN ] random-init expert load is roughly balanced (no collapse)
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
+#words: 128256 - BOS ID: 128000 - EOS ID: 128001
+  [SKIP] random-init expert load is roughly balanced (no collapse): not available in this recorded run
+
+======================================================================
+Results: 4 PASS, 0 FAIL, 9 SKIP
+======================================================================

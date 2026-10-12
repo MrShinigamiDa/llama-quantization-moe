@@ -1,5 +1,5 @@
 """
-Phase 3: Fine-tune the MoE router (and optionally expert / LoRA weights) on an
+Fine-tune the MoE router (and optionally expert / LoRA weights) on an
 Alpaca subset, then qualitatively evaluate on MT-bench prompts.
 
 Usage: CUDA_VISIBLE_DEVICES=0 python train_moe.py
@@ -18,12 +18,16 @@ from llama.moe import (
     LoRAMoEFeedForward,
 )
 
+CHECKPOINT_DIR = os.environ.get(
+    "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+)
+DATA_DIR = os.environ.get("LLAMA_DATA_DIR", "data")
+
 
 def load_model(device="cuda", max_seq_len=256, kv_caching=True):
-    checkpoint_dir = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
-    tokenizer = Tokenizer(os.path.join(checkpoint_dir, "tokenizer.model"))
+    tokenizer = Tokenizer(os.path.join(CHECKPOINT_DIR, "tokenizer.model"))
     checkpoint = torch.load(
-        os.path.join(checkpoint_dir, "consolidated.00.pth"),
+        os.path.join(CHECKPOINT_DIR, "consolidated.00.pth"),
         map_location="cpu",
         weights_only=True,
     )
@@ -196,20 +200,18 @@ def main():
     device = args.device
     torch.manual_seed(42)
 
-    # Data split for Phase 3:
-    # the first 200 Alpaca samples are used for training; eval_moe.py uses
-    # samples 200-299 as a held-out set.
-    with open("/project2/saifhash_1190/data/alpaca_500.json") as f:
+    # Keep evaluation samples disjoint from the training prefix.
+    with open(os.path.join(DATA_DIR, "alpaca_500.json")) as f:
         alpaca_data = json.load(f)
     train_texts = [s["text"] for s in alpaca_data]
-    with open("/project2/saifhash_1190/data/mt_bench_prompts.json") as f:
+    with open(os.path.join(DATA_DIR, "mt_bench_prompts.json")) as f:
         mt_prompts = json.load(f)
 
     # ================================================================
     # 1. Dense baseline evaluation
     # ================================================================
     print("=" * 70)
-    print("Phase 3: MoE Fine-tuning Experiment")
+    print("MoE Fine-tuning Experiment")
     print("=" * 70)
     print(
         f"Config: N={args.num_experts}, K={args.top_k}, init_mode={args.init_mode}, "

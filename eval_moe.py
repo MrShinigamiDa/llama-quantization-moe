@@ -15,12 +15,16 @@ from llama.model import ModelArgs, Llama
 from llama.tokenizer import Tokenizer
 from llama.moe import convert_to_moe, get_expert_load_stats
 
+CHECKPOINT_DIR = os.environ.get(
+    "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+)
+DATA_DIR = os.environ.get("LLAMA_DATA_DIR", "data")
+
 
 def load_model(device="cuda", max_seq_len=256, kv_caching=True):
-    checkpoint_dir = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
-    tokenizer = Tokenizer(os.path.join(checkpoint_dir, "tokenizer.model"))
+    tokenizer = Tokenizer(os.path.join(CHECKPOINT_DIR, "tokenizer.model"))
     checkpoint = torch.load(
-        os.path.join(checkpoint_dir, "consolidated.00.pth"),
+        os.path.join(CHECKPOINT_DIR, "consolidated.00.pth"),
         map_location="cpu", weights_only=True,
     )
     model_args = ModelArgs()
@@ -106,13 +110,12 @@ def main():
     device = args.device
     torch.manual_seed(42)
 
-    # Held-out split for Phase 3: train_moe.py uses the first 200 Alpaca
-    # samples for training; we evaluate on samples 200-299 here.
-    with open("/project2/saifhash_1190/data/alpaca_500.json") as f:
+    # Evaluate on samples 200-299, disjoint from the default training prefix.
+    with open(os.path.join(DATA_DIR, "alpaca_500.json")) as f:
         alpaca_data = json.load(f)
     eval_texts = [s["text"] for s in alpaca_data[200:300]]  # held-out from training (first 200 used for training)
 
-    with open("/project2/saifhash_1190/data/mt_bench_prompts.json") as f:
+    with open(os.path.join(DATA_DIR, "mt_bench_prompts.json")) as f:
         mt_prompts = json.load(f)
 
     print("=" * 70)

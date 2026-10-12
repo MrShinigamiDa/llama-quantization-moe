@@ -4,13 +4,15 @@ import torch
 
 from llama.tokenizer import Tokenizer
 from llama.model import ModelArgs, Llama
-from llama.quantize import QuantizedLinear, quantize_model
+from llama.quantize import quantize_model
 
 def inference():
     """Smoke test: load the dense FP16 model and print a few sample generations."""
     torch.manual_seed(1)
 
-    checkpoint_dir = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
+    checkpoint_dir = os.environ.get(
+        "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+    )
     tokenizer_path = os.path.join(checkpoint_dir, "tokenizer.model")
     model_path = os.path.join(checkpoint_dir, "consolidated.00.pth")
 
@@ -36,8 +38,9 @@ def inference():
     print(f"Model Size on Disk/Memory: {total_size_mb:.2f} MB")
     print("==================================\n")
 
+    # Cover open-ended continuation, factual completion, message writing,
+    # and few-shot translation.
     prompts = [
-        # For these prompts, the expected answer is the natural continuation of the prompt
         "I believe the meaning of life is",
         "Simply put, the theory of relativity states that ",
         """A brief message congratulating the team on the launch:
@@ -45,7 +48,6 @@ def inference():
         Hi everyone,
 
         I just """,
-        # Few shot prompt (providing a few examples before asking model to complete more);
         """Translate English to French:
 
         sea otter => loutre de mer

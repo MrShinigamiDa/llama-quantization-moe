@@ -28,22 +28,13 @@ class Generation(nn.Module):
                     # keys/values from its pre-allocated cache (see Attention.forward
                     # in model.py, the `if self.kv_caching:` branch).
                     #
-                    # BONUS extension (orthogonal to Phase 2 weight quantization):
-                    # the cache_k / cache_v tensors in model.py grow linearly with
-                    # context length and can dominate memory for long prompts.
-                    # Try quantizing them to INT8 or INT4 — short contexts are
-                    # weight-bound (Phase 2 wins), long contexts become
-                    # KV-cache-bound (KV-cache quantization wins).
+                    # The cache_k/cache_v tensors in model.py grow linearly with
+                    # context length. Quantizing them is a possible optimization
+                    # when long-context inference becomes KV-cache-bound.
                     logits = self(tokens[:, prev_pos:cur_pos], prev_pos)
                 else:
-                    # OPTIONAL extension (not required for Phase 2 or Phase 3):
-                    #
-                    # Implement naive decoding without the KV cache — at every step,
-                    # reprocess the entire prefix from scratch. Hint: pass
-                    # ``tokens[:, :cur_pos]`` with ``start_pos=0`` and let Attention
-                    # take its ``else`` branch (which uses xk/xv directly, no cache).
-                    # Compare runtime and peak memory against the cached path.
-                    pass
+                    # Without a KV cache, recompute the complete prefix each step.
+                    logits = self(tokens[:, :cur_pos], 0)
             if temperature > 0:
                 probs = torch.softmax(logits[:, -1] / temperature, dim=-1)
                 next_token = sample_top_p(probs, top_p)

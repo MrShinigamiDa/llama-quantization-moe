@@ -1,13 +1,10 @@
-"""
-check_student.py — self-verification for Phase 2 and Phase 3 implementations.
+"""Structural and numerical verification for INT4 and MoE implementations.
 
-Run:  CUDA_VISIBLE_DEVICES=0 python check_student.py
+Run: CUDA_VISIBLE_DEVICES=0 python verify_implementation.py
 
-This script runs structural and numerical correctness checks on your
-llama/quantize.py and llama/moe.py.  Each check prints [PASS], [FAIL], or
-[SKIP] with a one-line diagnosis.  It verifies correctness, NOT performance
-(see run_benchmark.py for that).  Unimplemented phases show up as SKIP, so
-you can run this at any stage of the project.
+Each check prints [PASS], [FAIL], or [SKIP] with a one-line diagnosis. The
+checks cover correctness rather than performance; use run_benchmark.py for
+performance measurements.
 """
 import os
 import traceback
@@ -20,7 +17,9 @@ import torch.nn.functional as F
 from llama.model import ModelArgs, Llama
 from llama.tokenizer import Tokenizer
 
-CHECKPOINT_DIR = "/project2/saifhash_1190/llama/checkpoints/Llama3.2-1B"
+CHECKPOINT_DIR = os.environ.get(
+    "LLAMA_CHECKPOINT_DIR", "checkpoints/Llama3.2-1B"
+)
 
 DIM = 2048         # Llama-3.2-1B
 HIDDEN_DIM = 8192  # Llama-3.2-1B FFN hidden size
@@ -68,12 +67,12 @@ def load_fresh_model(max_seq_len=128):
 
 
 # ===================================================================
-# Phase 2 — INT4 Quantization
+# INT4 quantization
 # ===================================================================
 
-def phase2_checks():
+def quantization_checks():
     print("\n" + "=" * 70)
-    print("PHASE 2  INT4 Quantization (llama/quantize.py)")
+    print("INT4 Quantization (llama/quantize.py)")
     print("=" * 70)
 
     try:
@@ -137,12 +136,12 @@ def phase2_checks():
 
 
 # ===================================================================
-# Phase 3 — MoE
+# Mixture-of-Experts
 # ===================================================================
 
-def phase3_checks():
+def moe_checks():
     print("\n" + "=" * 70)
-    print("PHASE 3  Mixture-of-Experts (llama/moe.py)")
+    print("Mixture-of-Experts (llama/moe.py)")
     print("=" * 70)
 
     try:
@@ -167,7 +166,7 @@ def phase3_checks():
         moe = MoEFeedForward(dim=DIM, hidden_dim=HIDDEN_DIM, num_experts=4, top_k=2).to("cuda").half()
         x = torch.randn(1, 16, DIM, device="cuda", dtype=torch.float16)
         _ = moe(x)
-        # recompute the top-k weights the student's forward *should* have produced
+        # Recompute the expected normalized top-k weights.
         x_flat = x.reshape(-1, DIM)
         logits = moe.router(x_flat)
         weights = F.softmax(logits.float(), dim=-1)
@@ -305,12 +304,12 @@ def phase3_checks():
 
 def main():
     print("=" * 70)
-    print("Student implementation check")
+    print("Implementation verification")
     print("=" * 70)
     torch.manual_seed(42)
 
-    phase2_checks()
-    phase3_checks()
+    quantization_checks()
+    moe_checks()
 
     print("\n" + "=" * 70)
     print(f"Results: {_results['pass']} PASS, "

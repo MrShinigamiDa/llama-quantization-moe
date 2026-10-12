@@ -6,14 +6,14 @@ python train_moe.py --init-mode slice
 
 
 ======================================================================
-Phase 3: MoE Fine-tuning Experiment
+MoE Fine-tuning Experiment
 ======================================================================
 Config: N=4, K=2, init_mode=slice, train_samples=200, epochs=2
 
 [1/4] Loading dense baseline model...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
-/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+<python-env>/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
   _C._set_default_tensor_type(t)
 
 --- Dense Baseline ---
@@ -38,7 +38,7 @@ The distance the train traveled was 5.5 miles.
 
 
 [2/4] Converting to MoE (before fine-tuning)...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
 
 --- MoE (Before Training) ---
@@ -64,7 +64,7 @@ Expert load before training (first 4 layers):
   Layer 3: ['50%', '0%', '28%', '22%']
 
 [3/4] Fine-tuning MoE router + experts...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
 Trainable params: 131,072 / 1,498,613,760 (0.01%)
   Epoch 1, step 50/200, loss=11.6664
@@ -80,7 +80,7 @@ Epoch 2/2: loss=8.2333, time=21.5s
 Training losses: [10.490791680552043, 8.233310045571791]
 
 [4/4] Evaluating fine-tuned MoE...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
 
 --- MoE (After Training) ---
@@ -160,34 +160,34 @@ Eval set: 100 held-out Alpaca samples
 ======================================================================
 
 [1/3] Dense Baseline...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
-/home1/bhogasam/.local/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
+<python-env>/lib/python3.11/site-packages/torch/__init__.py:1236: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:434.)
   _C._set_default_tensor_type(t)
   Perplexity: 9.66
   Next-token accuracy: 51.36%
   Evaluated on 5711 tokens
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
   Generation speed: 45.8 tok/s (6.86s for 10 prompts)
 
 [2/3] MoE Before Training (init=slice, N=4, K=2)...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
   Perplexity: 359015.72
   Next-token accuracy: 0.00%
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
   Generation speed: 27.6 tok/s (11.60s for 10 prompts)
 
 [3/3] MoE After Training...
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
   Loaded fine-tuned weights from checkpoints/moe_finetuned.pt
   Training losses: [10.490791680552043, 8.233310045571791]
   Perplexity: 3227.23
   Next-token accuracy: 4.36%
-Reloaded tiktoken model from /project2/saifhash_1190/llama/checkpoints/Llama3.2-1B/tokenizer.model
+Reloaded tiktoken model from checkpoints/Llama3.2-1B/tokenizer.model
 #words: 128256 - BOS ID: 128000 - EOS ID: 128001
   Generation speed: 20.1 tok/s (11.58s for 10 prompts)
   Expert load (first 4 layers):

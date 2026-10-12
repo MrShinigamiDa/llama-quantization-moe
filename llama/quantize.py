@@ -4,8 +4,6 @@ INT4 Weight-Only Quantization for Llama 3.2-1B
 This module implements per-group INT4 quantization for nn.Linear layers.
 Each group of `group_size` weights shares a scale and zero_point.
 Two INT4 values are packed into a single uint8 for storage efficiency.
-
-Students: Complete the functions marked with TODO.
 """
 
 import torch
@@ -18,7 +16,8 @@ class QuantizedLinear(nn.Module):
     A quantized linear layer that stores weights in INT4 format
     and dequantizes them to FP16 at inference time.
 
-    This replaces nn.Linear, similar to how LoRA replaced Q/V projections last year.
+    Instances can replace ``nn.Linear`` modules without changing their public
+    interface.
     """
 
     def __init__(self, in_features: int, out_features: int, group_size: int = 128, bias: bool = False):
@@ -63,28 +62,19 @@ class QuantizedLinear(nn.Module):
         # Reshape into groups: (out_features, n_groups, group_size)
         w = weight.float().reshape(out_features, n_groups, group_size)
 
-        # TODO: Compute per-group min and max
-        # w_min = ...  # shape: (out_features, n_groups)
-        # w_max = ...  # shape: (out_features, n_groups)
-        # dw_min = torch.max(w, dim=2)  # shape: (out_features, n_groups)
-        # dw_max = torch.min(w, dim=2)  # shape: (out_features, n_groups)
+        # Derive affine quantization parameters independently for each group.
         w_min = w.amin(dim=-1, keepdim=True)  # shape: (out_features, n_groups)
         w_max = w.amax(dim=-1, keepdim=True)  # shape: (out_features, n_groups)
-        # print(w_min, w_max, dw_min, dw_max, sep='\n')
 
-        # TODO: Compute scale and zero_point
-        # scale = (w_max - w_min) / 15  # 15 = 2^4 - 1
-        # zero_point = ...  # round(-w_min / scale), clamped to [0, 15]
         # Handle the case where scale is 0 (constant group) to avoid division by zero
         scale = (w_max - w_min) / 15.0
         scale = scale.clamp(min=1e-5)
         zero_point = torch.clamp(torch.round(-w_min / scale), 0, 15)
 
-        # TODO: Quantize weights to INT4 range [0, 15]
+        # Map weights to the unsigned INT4 range.
         w_int4 = torch.clamp(torch.round(w / scale + zero_point), 0, 15)
 
-        # TODO: Pack two INT4 values into one uint8
-        # For each pair of adjacent values along the last dimension:
+        # Pack each adjacent pair into the low and high nibbles of one byte.
         w_int4 = w_int4.reshape(out_features, in_features).to(torch.uint8)
         w_even = w_int4[:, 0::2]
         w_odd = w_int4[:, 1::2]
@@ -94,7 +84,6 @@ class QuantizedLinear(nn.Module):
         scale = scale.squeeze(-1).half()
         zero_point = zero_point.squeeze(-1).half()
 
-        # raise NotImplementedError("Complete the quantize_tensor function")
         return packed, scale, zero_point
 
     @staticmethod
@@ -115,19 +104,16 @@ class QuantizedLinear(nn.Module):
         in_features = packed_weight.shape[1] * 2
         n_groups = in_features // group_size
 
-        # TODO: Unpack uint8 to two INT4 values
+        # Recover the low and high nibbles and interleave them.
         w_even = packed_weight & 0x0F          # lower 4 bits
         w_odd = (packed_weight >> 4) & 0x0F    # upper 4 bits
         # Interleave them back to get shape (out_features, in_features)
         w_int4 = torch.stack((w_even, w_odd), dim=-1).view(out_features, in_features).reshape(out_features, n_groups, group_size).half()
-
-
-        # TODO: Reshape into groups and dequantize
+        # Restore the per-group affine representation.
         scale = scale.unsqueeze(-1).half()
         zero_point = zero_point.unsqueeze(-1).half()
         w_fp16 = (w_int4 - zero_point) * scale
 
-        # raise NotImplementedError("Complete the dequantize_packed function")
         return w_fp16.reshape(out_features, in_features)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -185,12 +171,7 @@ def quantize_model(model, group_size=128):
     Returns:
         The model with quantized linear layers (modified in-place)
     """
-    # TODO: Iterate through all modules in the model
-    # For each nn.Linear, replace it with QuantizedLinear.from_linear(...)
-    # Hint: use model.named_modules() to find all Linear layers
-    # Hint: to replace a submodule, you need to use setattr on its parent
-
-    # raise NotImplementedError("Complete the quantize_model function")
+    # Materialize the module list before replacing children in place.
     for name, module in list(model.named_modules()):
         if isinstance(module, nn.Linear):
             name_parts = name.split('.')
@@ -219,4 +200,3 @@ def print_model_size(model):
     print(f"  Parameters: {param_bytes / (1024**2):.2f} MB")
     print(f"  Buffers: {buffer_bytes / (1024**2):.2f} MB")
     return total_mb
-

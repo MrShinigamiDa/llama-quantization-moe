@@ -1,12 +1,7 @@
 """
 Download Alpaca training data and MT-bench evaluation prompts.
 
-Optional: the class-shared copy already exists at
-    /project2/saifhash_1190/data/alpaca_500.json
-    /project2/saifhash_1190/data/mt_bench_prompts.json
-
-You only need to run this script if you want to re-download the data to a
-different location (e.g. your own machine). Requires the `datasets` package:
+Requires the `datasets` package:
     pip install datasets
 
 Usage:
